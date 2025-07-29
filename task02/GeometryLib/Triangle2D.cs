@@ -86,16 +86,30 @@ public class Triangle2D
     /// </summary>
     public bool IsRightAngled()
     {
-        // TODO: реализовать метод
-        return true;
+        // Проверка по теореме пифагора
+        bool firstOption = Math.Pow(this.SideAB, 2) == Math.Pow(this.SideBC, 2) + Math.Pow(this.SideCA, 2);
+        bool secondOption = Math.Pow(this.SideBC, 2) == Math.Pow(this.SideAB, 2) + Math.Pow(this.SideCA, 2);
+        bool thirdOption = Math.Pow(this.SideCA, 2) == Math.Pow(this.SideAB, 2) + Math.Pow(this.SideBC, 2);
+        return firstOption || secondOption || thirdOption;
     }
 
     /// <summary>
     /// Треугольник содержит точку.
     /// </summary>
-    public bool Contains(Point2D p)
+    public bool Contains(Point2D point)
     {
-        // TODO: Реализовать метод
-        return true;
+        // Метод сравнения площадей
+        double areaABC = TriangleArea(_a, _b, _c);
+        double areaPAB = TriangleArea(point, _a, _b);
+        double areaPBC = TriangleArea(point, _b, _c);
+        double areaPCA = TriangleArea(point, _c, _a);
+
+        // Учитываем погрешность double (ε = 1e-10)
+        return Math.Abs(areaABC - (areaPAB + areaPBC + areaPCA)) < 1e-10;
+    }
+
+    private static double TriangleArea(Point2D A, Point2D B, Point2D C)
+    {
+        return Math.Abs((B.X - A.X) * (C.Y - A.Y) - (B.Y - A.Y) * (C.X - A.X)) / 2.0;
     }
 }
