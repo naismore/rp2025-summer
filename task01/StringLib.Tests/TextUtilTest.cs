@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 using StringLib;
 
 namespace StringLib.Tests;
@@ -9,6 +11,14 @@ public class TextUtilTest
     public void Can_split_into_words(string input, string[] expected)
     {
         List<string> result = TextUtil.SplitIntoWords(input);
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [MemberData(nameof(ReverseWordOrderParams))]
+    public void Can_reverse_word_order(string input, string expected)
+    {
+        string result = TextUtil.ReverseWordOrder(input);
         Assert.Equal(expected, result);
     }
 
@@ -63,6 +73,52 @@ public class TextUtilTest
             { "'a-b'", ["a-b"] },
             { "--", [] },
             { "'", [] },
+        };
+    }
+
+    public static TheoryData<string, string> ReverseWordOrderParams()
+    {
+        return new TheoryData<string, string>
+        {
+            // Пустая строка
+            { "", "" },
+
+            // Одно слово на русском и английском
+            { "Hello", "Hello" },
+            { "Привет", "Привет" },
+
+            // Несколько слов на русском и английском
+            { "The quick brown fox jumps over the lazy dog.", "dog lazy the over jumps fox brown quick The" },
+            { "Съешь же ещё этих мягких французских булок, да выпей чаю.", "чаю выпей да булок французских мягких этих ещё же Съешь" },
+
+            // Слова с апострофами и дефисами
+            { "Can't — это одно word", "word one это Can't" },
+            { "Какой-нибудь — это одно слово", "слово одно это Какой-нибудь" },
+
+            // Обработка знаков препинания
+            { "зелёный,чёрный", "чёрный зелёный" },
+            { "punctuation before the end.", "end the before punctuation" },
+
+            // Несколько знаков препинания
+            { "mixed with other words!?;", "words other with mixed" },
+
+            // Сохранение регистра
+            { "the Quick Brown Fox jumps over THE LAZY DOG", "DOG LAZY THE over jumps Fox Brown Quick the" },
+
+            // Краевые случаи
+
+            // Пробелы в начале и конце строки
+            { "  word  ", "word" },
+            { "  one two  ", "two one" },
+
+            // Несколько пробелов между словами
+            { "one  two   three", "three two one" },
+
+            // Строка только из пробелов и знаков препинания
+            { "   ,, ... !!  ", "" },
+
+            // Эмодзи
+            { "😊 word", "word 😊" },
         };
     }
 }

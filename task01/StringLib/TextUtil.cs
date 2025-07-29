@@ -22,4 +22,17 @@ public static class TextUtil
             .Select(match => match.Value)
             .ToList();
     }
+
+    public static string ReverseWordOrder(string text)
+    {
+        List<string> items = SplitIntoWords(text);
+        items.Reverse();
+        for (int i = 0; i < items.Count; i++)
+        {
+            Regex regex = new(@"[\p{P}]+");
+            items[i] = regex.Replace(items[i], " ");
+        }
+
+        return string.Join(" ", items).Trim();
+    }
 }
