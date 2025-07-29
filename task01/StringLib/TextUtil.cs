@@ -27,12 +27,6 @@ public static class TextUtil
     {
         List<string> items = SplitIntoWords(text);
         items.Reverse();
-        for (int i = 0; i < items.Count; i++)
-        {
-            Regex regex = new(@"[\p{P}]+");
-            items[i] = regex.Replace(items[i], " ");
-        }
-
         return string.Join(" ", items).Trim();
     }
 }
