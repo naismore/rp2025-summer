@@ -5,17 +5,21 @@ namespace GeometryLib;
 
 public class Triangle2D
 {
-    private readonly Point2D _a;
-    private readonly Point2D _b;
-    private readonly Point2D _c;
+    private readonly Point2D a;
+    private readonly Point2D b;
+    private readonly Point2D c;
 
     public Triangle2D(Point2D a, Point2D b, Point2D c)
     {
-        _a = a;
-        _b = b;
-        _c = c;
+        double area = (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y) * (c.X - a.X);
+        if (Math.Abs(area) < 1e-10)
+        {
+            throw new ArgumentException("Все три точки лежат на одной прямой");
+        }
 
-        // выбрасывайте ArgumentException для вырожденного треугольника (то есть когда все три точки лежат на одной прямой)
+        this.a = a;
+        this.b = b;
+        this.c = c;
     }
 
     /// <summary>
@@ -25,7 +29,7 @@ public class Triangle2D
     {
         get
         {
-            return _a.DistanceTo(_b);
+            return a.DistanceTo(b);
         }
     }
 
@@ -36,7 +40,7 @@ public class Triangle2D
     {
         get
         {
-            return _b.DistanceTo(_c);
+            return b.DistanceTo(c);
         }
     }
 
@@ -47,7 +51,7 @@ public class Triangle2D
     {
         get
         {
-            return _c.DistanceTo(_a);
+            return c.DistanceTo(a);
         }
     }
 
@@ -79,7 +83,15 @@ public class Triangle2D
     /// <summary>
     /// Центр масс треугольника.
     /// </summary>
-    public Point2D Centroid { get; }
+    public Point2D Centroid
+    {
+        get
+        {
+            double gx = (a.X + b.X + c.X) / 3;
+            double gy = (a.Y + b.Y + c.Y) / 3;
+            return new Point2D(x: gx, y: gy);
+        }
+    }
 
     /// <summary>
     /// Проверка на прямоугольный треугольник.
@@ -99,17 +111,17 @@ public class Triangle2D
     public bool Contains(Point2D point)
     {
         // Метод сравнения площадей
-        double areaABC = TriangleArea(_a, _b, _c);
-        double areaPAB = TriangleArea(point, _a, _b);
-        double areaPBC = TriangleArea(point, _b, _c);
-        double areaPCA = TriangleArea(point, _c, _a);
+        double areaABC = TriangleArea(a, b, c);
+        double areaPAB = TriangleArea(point, a, b);
+        double areaPBC = TriangleArea(point, b, c);
+        double areaPCA = TriangleArea(point, c, a);
 
         // Учитываем погрешность double (ε = 1e-10)
         return Math.Abs(areaABC - (areaPAB + areaPBC + areaPCA)) < 1e-10;
     }
 
-    private static double TriangleArea(Point2D A, Point2D B, Point2D C)
+    private static double TriangleArea(Point2D a, Point2D b, Point2D c)
     {
-        return Math.Abs((B.X - A.X) * (C.Y - A.Y) - (B.Y - A.Y) * (C.X - A.X)) / 2.0;
+        return Math.Abs((b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y) * (c.X - a.X)) / 2.0;
     }
 }

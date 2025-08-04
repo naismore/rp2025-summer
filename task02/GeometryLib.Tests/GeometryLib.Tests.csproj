@@ -24,4 +24,8 @@
     <ProjectReference Include="..\GeometryLib\GeometryLib.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
+  </PropertyGroup>
+
 </Project>
